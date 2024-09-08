@@ -1,0 +1,73 @@
+﻿<Window x:Class="ChatApp.Login"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ChatApp"
+        xmlns:ViewModel="clr-namespace:ChatApp.MVVM.ViewModel"
+        mc:Ignorable="d"
+        Title="Login" Height="450" Width="400">
+
+    <Window.DataContext>
+        <ViewModel:LoginViewModel/>
+    </Window.DataContext>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Label Content="Username: "
+               Grid.Column="1"
+               Grid.Row="1"
+               VerticalAlignment="Center"
+               HorizontalAlignment="Right"/>
+
+        <TextBox Grid.Row="1"
+                 Grid.Column="2"
+                 Width="140"
+                 Height="25"
+                 VerticalContentAlignment="center"
+                 Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <Label Content="Password: "
+               Grid.Column="1"
+               Grid.Row="2"
+               VerticalAlignment="Center"
+               HorizontalAlignment="Right"/>
+
+        <TextBox Grid.Row="2"
+                 Grid.Column="2"
+                 Width="140"
+                 Height="25"
+                 VerticalContentAlignment="center"
+                 Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <Button Content="Login"
+                Grid.Row="3"
+                Grid.Column="1"
+                Grid.ColumnSpan="2"
+                Height="30"
+                Width="100"
+                Command="{Binding LoginCommand}"/>
+        
+        <Button Content="Register"
+            Grid.Row="4"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            Height="30"
+            Width="100"/>
+    </Grid>
+</Window>
