@@ -5,7 +5,7 @@ namespace DAL
 {
     public static class DatabaseOperations
     {
-        private static string connectionString = "Data Source=D:\\Projects\\Databases\\chatApp.db";
+        private static string connectionString = "Data Source=C:\\Users\\gilles.lagrilliere\\OneDrive - Codraft\\Documents\\C#-projects\\Databases\\chatApp.db";
         public static bool Login(string username, string password)
         {
             try

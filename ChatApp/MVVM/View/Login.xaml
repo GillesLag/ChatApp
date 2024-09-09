@@ -48,12 +48,12 @@
                VerticalAlignment="Center"
                HorizontalAlignment="Right"/>
 
-        <TextBox Grid.Row="2"
+        <PasswordBox Grid.Row="2"
                  Grid.Column="2"
                  Width="140"
                  Height="25"
                  VerticalContentAlignment="center"
-                 Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"/>
+                 PasswordBox.PasswordChanged="PasswordBox_PasswordChanged"/>
 
         <Button Content="Login"
                 Grid.Row="3"

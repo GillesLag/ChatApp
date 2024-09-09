@@ -26,7 +26,7 @@ namespace ChatApp
         {
             if (!_client.Connected)
             {
-                await _client.ConnectAsync(IPAddress.Parse("192.168.0.119"), 5000);
+                await _client.ConnectAsync(IPAddress.Parse("127.0.0.1"), 5000);
                 PacketReader = new PacketReader(_client.GetStream());
 
                 var loginPacket = new PacketBuilder();

@@ -10,7 +10,7 @@ namespace Server
         static List<Client> users = new List<Client>();
         static void Main(string[] args)
         {
-            TcpListener tcpListener = new TcpListener(IPAddress.Parse("192.168.0.119"), 5000);
+            TcpListener tcpListener = new TcpListener(IPAddress.Parse("127.0.0.1"), 5000);
             tcpListener.Start();
             Console.WriteLine("Server started, now listening...");
 

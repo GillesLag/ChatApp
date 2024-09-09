@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using ChatApp.MVVM.ViewModel;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,6 +20,20 @@ namespace ChatApp
         public Login()
         {
             InitializeComponent();
+        }
+
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            var passwordBox = sender as PasswordBox;
+            if (passwordBox != null)
+            {
+                var viewModel = this.DataContext as LoginViewModel;
+
+                if (viewModel != null)
+                {
+                    viewModel.Password = passwordBox.Password;
+                }
+            }
         }
     }
 }
