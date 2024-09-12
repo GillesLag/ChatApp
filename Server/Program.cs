@@ -34,6 +34,19 @@ namespace Server
             return false;
         }
 
+        public static bool RegisterUser(string username, string password)
+        {
+            Console.WriteLine("Client connected, trying to register.");
+            if(DatabaseOperations.Register(username, password))
+            {
+                Console.WriteLine($"{username} has register and is logged in.");
+
+                return true;
+            }
+
+            return false;
+        }
+
         public static void Disconnect(Client client)
         {
             users.Remove(client);

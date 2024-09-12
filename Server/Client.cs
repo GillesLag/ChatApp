@@ -20,7 +20,7 @@ namespace Server
             ClientSocket = client;
             _packetReader = new PacketReader(ClientSocket.GetStream());
 
-            Task.Run(() => Process());
+            Task.Run(Process);
 
         }
 
@@ -54,6 +54,33 @@ namespace Server
                             else
                             {
                                 packets.WriteOpCode(1);
+                                packets.WriteMessage("1");
+                                ClientSocket.Client.Send(packets.GetPacketBytes());
+                            }
+
+                            break;
+
+                        case 2:
+                            message = _packetReader.ReadMessage().Split(';');
+                            username = message[0];
+                            password = message[1];
+
+                            packets = new PacketBuilder();
+
+                            if (!Program.RegisterUser(username, password))
+                            {
+                                packets.WriteOpCode(2);
+                                packets.WriteMessage("0");
+                                ClientSocket.Client.Send(packets.GetPacketBytes());
+
+                                Program.Disconnect(this);
+                                Console.WriteLine("Username already exist, client disconnected");
+
+                                keepRunning = false;
+                            }
+                            else
+                            {
+                                packets.WriteOpCode(2);
                                 packets.WriteMessage("1");
                                 ClientSocket.Client.Send(packets.GetPacketBytes());
                             }
