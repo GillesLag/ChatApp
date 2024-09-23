@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChatApp.MVVM.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,10 +20,12 @@ namespace ChatApp.MVVM.View
     /// </summary>
     public partial class Home : Window
     {
-        Server _server;
-        public Home(Server server)
+        public Home(Server server, string username)
         {
-            _server = server;
+            var homeViewModel = new HomeViewModel(server);
+            homeViewModel.Username = username;
+            DataContext = homeViewModel;
+
             InitializeComponent();
         }
     }

@@ -53,9 +53,12 @@ namespace Server
                             }
                             else
                             {
+                                Username = username;
                                 packets.WriteOpCode(1);
                                 packets.WriteMessage("1");
                                 ClientSocket.Client.Send(packets.GetPacketBytes());
+                                Program.BroadcastMessage(this);
+                                Program.GetAllUsers(this);
                             }
 
                             break;
@@ -80,9 +83,12 @@ namespace Server
                             }
                             else
                             {
+                                Username = username;
                                 packets.WriteOpCode(2);
                                 packets.WriteMessage("1");
                                 ClientSocket.Client.Send(packets.GetPacketBytes());
+                                Program.BroadcastMessage(this);
+                                Program.GetAllUsers(this);
                             }
 
                             break;
@@ -91,7 +97,6 @@ namespace Server
                 catch (Exception)
                 {
 
-                    throw;
                 }
             }
         }

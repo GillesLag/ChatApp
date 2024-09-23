@@ -9,10 +9,6 @@
         Title="Home" Height="480
         " Width="820">
 
-    <Window.DataContext>
-        <ViewModel:HomeViewModel/>
-    </Window.DataContext>
-    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>

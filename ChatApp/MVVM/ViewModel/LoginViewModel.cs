@@ -32,7 +32,7 @@ namespace ChatApp.MVVM.ViewModel
         private void LoggedIn()
         {
             Application.Current.Dispatcher.Invoke(() => {
-                Home view = new Home(_server);
+                Home view = new Home(_server, Username);
                 loginView.Close();
                 view.Show();
             });

@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Net;
 using ChatApp.NET.IO;
 using System.Windows;
+using ChatApp.MVVM.Model;
 
 namespace ChatApp
 {
@@ -15,6 +16,11 @@ namespace ChatApp
         private TcpClient _client;
         public PacketReader PacketReader { get; set; }
 
+        public delegate void NewUser(User user);
+        public delegate void AllUsers(IEnumerable<User> users);
+
+        public event AllUsers AllUsersEvent;
+        public event NewUser NewUserEvent;
         public event Action MsgReceivedEvent;
         public event Action LoggedInEvent;
         public event Action DisconnectEvent;
@@ -53,12 +59,13 @@ namespace ChatApp
                 while (keepRunning)
                 {
                     var opcode = PacketReader.ReadByte();
+                    string message = string.Empty;
 
                     switch (opcode)
                     {
                         case 1:
                         case 2:
-                            string message = PacketReader.ReadMessage();
+                            message = PacketReader.ReadMessage();
                             
                             if (message == "0")
                             {
@@ -70,6 +77,17 @@ namespace ChatApp
                             {
                                 LoggedInEvent.Invoke();
                             }
+                            break;
+
+                        case 3:
+                            message = PacketReader.ReadMessage();
+                            NewUserEvent.Invoke(new User(message));
+                            break;
+
+                        case 4:
+                            string[] users = PacketReader.ReadMessage().Split(':');
+                            IEnumerable<User> allUsers = users.Select(u => new User(u));
+                            AllUsersEvent.Invoke(allUsers);
                             break;
 
                         case 5:
