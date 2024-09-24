@@ -70,6 +70,7 @@
             Grid.ColumnSpan="2"
             Height="30"
             Width="100"
-            Command="{Binding RegisterCommand}"/>
+            Command="{Binding RegisterCommand}"
+            CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
     </Grid>
 </Window>

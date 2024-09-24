@@ -69,7 +69,7 @@ namespace Server
             foreach (var user in users.Where(u => u != client))
             {
                 sb.Append(user.Username);
-                sb.Append(':');
+                sb.Append(';');
             }
 
             if (sb.Length > 0)
@@ -83,6 +83,16 @@ namespace Server
 
             pb.WriteMessage(sb.ToString());
             client.ClientSocket.Client.Send(pb.GetPacketBytes());
+        }
+
+        public static void SendMsgToUser(string receiver, string message)
+        {
+            var user = users.First(u => u.Username == receiver);
+            var pb = new PacketBuilder();
+            pb.WriteOpCode(5);
+            pb.WriteMessage(message);
+
+            user.ClientSocket.Client.Send(pb.GetPacketBytes());
         }
 
         public static void Disconnect(Client client)

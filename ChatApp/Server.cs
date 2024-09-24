@@ -18,10 +18,11 @@ namespace ChatApp
 
         public delegate void NewUser(User user);
         public delegate void AllUsers(IEnumerable<User> users);
-
+        public delegate void MessageReceived(string username, string message);
+        
         public event AllUsers AllUsersEvent;
         public event NewUser NewUserEvent;
-        public event Action MsgReceivedEvent;
+        public event MessageReceived MsgReceivedEvent;
         public event Action LoggedInEvent;
         public event Action DisconnectEvent;
         public event Action FailedLoginOrRegisterEvent;
@@ -49,6 +50,15 @@ namespace ChatApp
                 await _client.ConnectAsync(IPAddress.Parse("127.0.0.1"), 5000);
                 PacketReader = new PacketReader(_client.GetStream());
             }
+        }
+
+        public void SendMessage(string message)
+        {
+            var pb = new PacketBuilder();
+            pb.WriteOpCode(5);
+            pb.WriteMessage(message);
+
+            _client.Client.Send(pb.GetPacketBytes());
         }
 
         private void ReadPackets()
@@ -85,13 +95,14 @@ namespace ChatApp
                             break;
 
                         case 4:
-                            string[] users = PacketReader.ReadMessage().Split(':');
+                            string[] users = PacketReader.ReadMessage().Split(';');
                             IEnumerable<User> allUsers = users.Select(u => new User(u));
                             AllUsersEvent.Invoke(allUsers);
                             break;
 
                         case 5:
-                            MsgReceivedEvent.Invoke();
+                            string[] msg = PacketReader.ReadMessage().Split(';');
+                            MsgReceivedEvent.Invoke(msg[0], msg[2]);
                             break;
                     }
                 }

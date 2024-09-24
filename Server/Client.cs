@@ -1,4 +1,5 @@
 ﻿using DAL;
+using Microsoft.VisualBasic;
 using Server.NET.IO;
 using System;
 using System.Collections.Generic;
@@ -91,6 +92,12 @@ namespace Server
                                 Program.GetAllUsers(this);
                             }
 
+                            break;
+
+                        case 5:
+                            string msg = _packetReader.ReadMessage();
+                            message = msg.Split(";");
+                            Program.SendMsgToUser(message[1], msg);
                             break;
                     }
                 }

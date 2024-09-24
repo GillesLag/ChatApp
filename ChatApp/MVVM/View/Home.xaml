@@ -6,8 +6,7 @@
         xmlns:local="clr-namespace:ChatApp.MVVM.View"
         xmlns:ViewModel="clr-namespace:ChatApp.MVVM.ViewModel"
         mc:Ignorable="d"
-        Title="Home" Height="480
-        " Width="820">
+        Title="{Binding Username}" Height="480" Width="820">
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -37,7 +36,7 @@
                      VerticalContentAlignment="Center"/>
                 <Button Width="55"
                     Content="Send"
-                    Command="{Binding SendMessageCommand}"/>
+                    Command="{Binding SendMsgCommand}"/>
             </StackPanel>
         </StackPanel>
     </Grid>
