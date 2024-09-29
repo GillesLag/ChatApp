@@ -11,7 +11,7 @@ namespace Server
         static List<Client> users = new List<Client>();
         static void Main(string[] args)
         {
-            TcpListener tcpListener = new TcpListener(IPAddress.Parse("127.0.0.1"), 5000);
+            TcpListener tcpListener = new TcpListener(IPAddress.Any, 5000);
             tcpListener.Start();
             Console.WriteLine("Server started, now listening...");
 
@@ -98,7 +98,13 @@ namespace Server
         public static void Disconnect(Client client)
         {
             users.Remove(client);
-            client.ClientSocket.Close();
+            foreach (Client user in users)
+            {
+                var pb = new PacketBuilder();
+                pb.WriteOpCode(10);
+                pb.WriteMessage(client.Username);
+                user.ClientSocket.Client.Send(pb.GetPacketBytes());
+            }
         }
     }
 }

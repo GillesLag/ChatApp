@@ -49,7 +49,7 @@ namespace Server
 
                                 Program.Disconnect(this);
                                 Console.WriteLine("Wrong credentials, client disconnected");
-                                
+
                                 keepRunning = false;
                             }
                             else
@@ -103,7 +103,10 @@ namespace Server
                 }
                 catch (Exception)
                 {
-
+                    Console.WriteLine($"{Username} has disconnected");
+                    Program.Disconnect(this);
+                    ClientSocket.Close();
+                    keepRunning = false;
                 }
             }
         }

@@ -8,6 +8,8 @@ using System.Net;
 using ChatApp.NET.IO;
 using System.Windows;
 using ChatApp.MVVM.Model;
+using DotNetEnv;
+using System.IO;
 
 namespace ChatApp
 {
@@ -47,7 +49,9 @@ namespace ChatApp
         {
             if (!_client.Connected)
             {
-                await _client.ConnectAsync(IPAddress.Parse("127.0.0.1"), 5000);
+                Env.Load("D:\\Projects\\ChatApp\\ChatApp\\.env");
+                var ip = Environment.GetEnvironmentVariable("SERVER_IP");
+                await _client.ConnectAsync(IPAddress.Parse(Environment.GetEnvironmentVariable("SERVER_IP")), 5000);
                 PacketReader = new PacketReader(_client.GetStream());
             }
         }
@@ -103,6 +107,10 @@ namespace ChatApp
                         case 5:
                             string[] msg = PacketReader.ReadMessage().Split(';');
                             MsgReceivedEvent.Invoke(msg[0], msg[2]);
+                            break;
+
+                        case 10:
+                            DisconnectEvent.Invoke();
                             break;
                     }
                 }

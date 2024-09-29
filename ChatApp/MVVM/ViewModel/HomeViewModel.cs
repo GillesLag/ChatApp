@@ -31,8 +31,19 @@ namespace ChatApp.MVVM.ViewModel
             _server.NewUserEvent += NewUserEvent;
             _server.AllUsersEvent += AllUsersEvent;
             _server.MsgReceivedEvent += MsgReceivedEvent;
+            _server.DisconnectEvent += UserDisconnectedEvent;
 
             SendMsgCommand = new RelayCommand(SendMessage, () => Receiver != null);
+        }
+
+        private void UserDisconnectedEvent()
+        {
+            string msg = _server.PacketReader.ReadMessage();
+            User user = Users.First(x => x.Username == msg);
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Users.Remove(user);
+            });
         }
 
         private void MsgReceivedEvent(string sender, string message)
