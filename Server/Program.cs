@@ -1,4 +1,6 @@
 ﻿using DAL;
+using DAL.Models;
+using DAL.Repositories;
 using Server.NET.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -9,8 +11,10 @@ namespace Server
     class Program
     {
         static List<Client> users = new List<Client>();
+        static UserRepository userRepo;
         static void Main(string[] args)
         {
+            userRepo = new UserRepository(new DAL.Database.Context.ChatDbContext());
             TcpListener tcpListener = new TcpListener(IPAddress.Any, 5000);
             tcpListener.Start();
             Console.WriteLine("Server started, now listening...");
@@ -25,7 +29,7 @@ namespace Server
         public static bool AuthenticateUser(string username, string password)
         {
             Console.WriteLine("Client connected, trying to login.");
-            if (DatabaseOperations.Login(username, password))
+            if (userRepo.Login(username, password))
             {
                 Console.WriteLine($"{username} has logged in.");
 
@@ -38,14 +42,21 @@ namespace Server
         public static bool RegisterUser(string username, string password)
         {
             Console.WriteLine("Client connected, trying to register.");
-            if(DatabaseOperations.Register(username, password))
-            {
-                Console.WriteLine($"{username} has register and is logged in.");
 
+            var user = new User();
+            user.UserName = username;
+            user.Password = password;
+
+            try
+            {
+                userRepo.AddUser(user);
+                Console.WriteLine($"{username} has register and is logged in.");
                 return true;
             }
-
-            return false;
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public static void BroadcastMessage(Client client)

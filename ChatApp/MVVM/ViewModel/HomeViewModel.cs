@@ -46,13 +46,14 @@ namespace ChatApp.MVVM.ViewModel
             });
         }
 
-        private void MsgReceivedEvent(string sender, string message)
+        private void MsgReceivedEvent()
         {
-            var user = Users.First(x => x.Username == sender);
+            var message = _server.PacketReader.ReadMessage().Split(';');
+            var user = Users.First(x => x.Username == message[0]);
 
             Application.Current.Dispatcher.Invoke(() =>
             {
-                user.Messages.Add(message);
+                user.Messages.Add(message[2]);
             });
         }
 
@@ -67,11 +68,12 @@ namespace ChatApp.MVVM.ViewModel
             }
         }
 
-        private void NewUserEvent(User user)
+        private void NewUserEvent()
         {
+            string user = _server.PacketReader.ReadMessage();
             Application.Current.Dispatcher.Invoke(() =>
             {
-                Users.Add(user);
+                Users.Add(new User(user));
             });
         }
 

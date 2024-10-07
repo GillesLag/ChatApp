@@ -1,11 +1,10 @@
-﻿using Microsoft.Data.Sqlite;
-using System.Data;
+﻿using System.Data;
 
 namespace DAL
 {
     public static class DatabaseOperations
     {
-        private static string connectionString = "Data Source=D:\\Projects\\Databases\\chatApp.db";
+        /*private static string connectionString = "Data Source=D:\\Projects\\Databases\\chatApp.db";
         public static bool Login(string username, string password)
         {
             try
@@ -63,6 +62,6 @@ namespace DAL
             }
 
             return false;
-        }
+        }*/
     }
 }

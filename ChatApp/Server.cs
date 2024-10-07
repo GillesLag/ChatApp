@@ -17,20 +17,20 @@ namespace ChatApp
     {
         private TcpClient _client;
         public PacketReader PacketReader { get; set; }
+        public int MyProperty { get; set; }
 
-        public delegate void NewUser(User user);
         public delegate void AllUsers(IEnumerable<User> users);
-        public delegate void MessageReceived(string username, string message);
         
         public event AllUsers AllUsersEvent;
-        public event NewUser NewUserEvent;
-        public event MessageReceived MsgReceivedEvent;
+        public event Action NewUserEvent;
+        public event Action MsgReceivedEvent;
         public event Action LoggedInEvent;
         public event Action DisconnectEvent;
         public event Action FailedLoginOrRegisterEvent;
         public Server()
         {
             _client = new TcpClient();
+            Env.Load("D:\\Projects\\ChatApp\\ChatApp\\.env");
         }
 
         public async Task LogginOrRegister(byte opcode, string username, string password)
@@ -51,8 +51,12 @@ namespace ChatApp
             {
                 Env.Load("D:\\Projects\\ChatApp\\ChatApp\\.env");
                 var ip = Environment.GetEnvironmentVariable("SERVER_IP");
-                await _client.ConnectAsync(IPAddress.Parse(Environment.GetEnvironmentVariable("SERVER_IP")), 5000);
-                PacketReader = new PacketReader(_client.GetStream());
+
+                if (ip is not null)
+                {
+                    await _client.ConnectAsync(IPAddress.Parse(ip), 5000);
+                    PacketReader = new PacketReader(_client.GetStream());
+                }
             }
         }
 
@@ -94,8 +98,7 @@ namespace ChatApp
                             break;
 
                         case 3:
-                            message = PacketReader.ReadMessage();
-                            NewUserEvent.Invoke(new User(message));
+                            NewUserEvent.Invoke();
                             break;
 
                         case 4:
@@ -105,8 +108,7 @@ namespace ChatApp
                             break;
 
                         case 5:
-                            string[] msg = PacketReader.ReadMessage().Split(';');
-                            MsgReceivedEvent.Invoke(msg[0], msg[2]);
+                            MsgReceivedEvent.Invoke();
                             break;
 
                         case 10:
