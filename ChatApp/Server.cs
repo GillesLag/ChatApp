@@ -8,7 +8,6 @@ using System.Net;
 using ChatApp.NET.IO;
 using System.Windows;
 using ChatApp.MVVM.Model;
-using DotNetEnv;
 using System.IO;
 
 namespace ChatApp
@@ -30,7 +29,6 @@ namespace ChatApp
         public Server()
         {
             _client = new TcpClient();
-            Env.Load("D:\\Projects\\ChatApp\\ChatApp\\.env");
         }
 
         public async Task LogginOrRegister(byte opcode, string username, string password)
@@ -49,14 +47,8 @@ namespace ChatApp
         {
             if (!_client.Connected)
             {
-                Env.Load("D:\\Projects\\ChatApp\\ChatApp\\.env");
-                var ip = Environment.GetEnvironmentVariable("SERVER_IP");
-
-                if (ip is not null)
-                {
-                    await _client.ConnectAsync(IPAddress.Parse(ip), 5000);
-                    PacketReader = new PacketReader(_client.GetStream());
-                }
+                await _client.ConnectAsync("127.0.0.1", 5000);
+                PacketReader = new PacketReader(_client.GetStream());
             }
         }
 

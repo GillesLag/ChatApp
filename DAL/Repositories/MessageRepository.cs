@@ -10,16 +10,11 @@ using System.Threading.Tasks;
 
 namespace DAL.Repositories
 {
-    public class UserRepository : Repository<User>, IUserRepository
+    public class MessageRepository : Repository<Message>, IMessageRepository
     {
-        public ChatDbContext? ChatDbContext 
+        public ChatDbContext? ChatDbContext { get { return _dbContext as ChatDbContext; } }
+        public MessageRepository(ChatDbContext context) : base(context)
         {
-            get { return _dbContext as ChatDbContext; } 
-        }
-
-        public UserRepository(ChatDbContext context) : base(context)
-        {
-
         }
     }
 }

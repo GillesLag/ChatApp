@@ -1,6 +1,7 @@
 ﻿using DAL;
 using DAL.Models;
-using DAL.Repositories;
+using DAL.UnitOfWork;
+using DAL.UnitOfWork.Interfacds;
 using Server.NET.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -11,10 +12,10 @@ namespace Server
     class Program
     {
         static List<Client> users = new List<Client>();
-        static UserRepository userRepo;
+        static IUnitOfWork unitOfWork;
         static void Main(string[] args)
         {
-            userRepo = new UserRepository(new DAL.Database.Context.ChatDbContext());
+            unitOfWork = new UnitOfWork(new DAL.Database.Context.ChatDbContext());
             TcpListener tcpListener = new TcpListener(IPAddress.Any, 5000);
             tcpListener.Start();
             Console.WriteLine("Server started, now listening...");
@@ -29,7 +30,8 @@ namespace Server
         public static bool AuthenticateUser(string username, string password)
         {
             Console.WriteLine("Client connected, trying to login.");
-            if (userRepo.Login(username, password))
+            var user = unitOfWork.Users.Find(u => u.UserName == username && u.Password == password);
+            if (users.Count() == 1)
             {
                 Console.WriteLine($"{username} has logged in.");
 
@@ -49,7 +51,8 @@ namespace Server
 
             try
             {
-                userRepo.AddUser(user);
+                unitOfWork.Users.Add(user);
+                unitOfWork.SaveChanges();
                 Console.WriteLine($"{username} has register and is logged in.");
                 return true;
             }

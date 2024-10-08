@@ -15,10 +15,10 @@ namespace DAL.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    UserName = table.Column<string>(type: "TEXT", nullable: false),
-                    Password = table.Column<string>(type: "TEXT", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -29,12 +29,12 @@ namespace DAL.Migrations
                 name: "Messaages",
                 columns: table => new
                 {
-                    MessageId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    MessageText = table.Column<string>(type: "TEXT", nullable: false),
-                    Sent = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    SenderId = table.Column<int>(type: "INTEGER", nullable: false),
-                    ReceiverId = table.Column<int>(type: "INTEGER", nullable: false)
+                    MessageId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MessageText = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Sent = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SenderId = table.Column<int>(type: "int", nullable: false),
+                    ReceiverId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

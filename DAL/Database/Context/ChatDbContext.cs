@@ -16,9 +16,7 @@ namespace DAL.Database.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //TODO get connectionstring from app.config
-            var test = ConfigurationManager.ConnectionStrings["ChatAppDb"].ConnectionString;
-            optionsBuilder.UseSqlServer(ConfigurationManager.ConnectionStrings["ChatAppDb"].ConnectionString);
+            optionsBuilder.UseSqlServer(ConfigurationManager.ConnectionStrings[0].ConnectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
