@@ -31,7 +31,7 @@ namespace Server
         {
             Console.WriteLine("Client connected, trying to login.");
             var user = unitOfWork.Users.Find(u => u.UserName == username && u.Password == password);
-            if (users.Count() == 1)
+            if (user.Count() == 1)
             {
                 Console.WriteLine($"{username} has logged in.");
 

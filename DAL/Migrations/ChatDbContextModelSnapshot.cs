@@ -49,7 +49,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Messaages");
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("DAL.Models.User", b =>
@@ -78,13 +78,13 @@ namespace DAL.Migrations
                     b.HasOne("DAL.Models.User", "Receiver")
                         .WithMany("ReceivedMessages")
                         .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("DAL.Models.User", "Sender")
                         .WithMany("SentMessages")
                         .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Receiver");

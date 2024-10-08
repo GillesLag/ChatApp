@@ -26,7 +26,7 @@ namespace DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Messaages",
+                name: "Messages",
                 columns: table => new
                 {
                     MessageId = table.Column<int>(type: "int", nullable: false)
@@ -38,29 +38,27 @@ namespace DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Messaages", x => x.MessageId);
+                    table.PrimaryKey("PK_Messages", x => x.MessageId);
                     table.ForeignKey(
-                        name: "FK_Messaages_Users_ReceiverId",
+                        name: "FK_Messages_Users_ReceiverId",
                         column: x => x.ReceiverId,
                         principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UserId");
                     table.ForeignKey(
-                        name: "FK_Messaages_Users_SenderId",
+                        name: "FK_Messages_Users_SenderId",
                         column: x => x.SenderId,
                         principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UserId");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messaages_ReceiverId",
-                table: "Messaages",
+                name: "IX_Messages_ReceiverId",
+                table: "Messages",
                 column: "ReceiverId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messaages_SenderId",
-                table: "Messaages",
+                name: "IX_Messages_SenderId",
+                table: "Messages",
                 column: "SenderId");
         }
 
@@ -68,7 +66,7 @@ namespace DAL.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Messaages");
+                name: "Messages");
 
             migrationBuilder.DropTable(
                 name: "Users");

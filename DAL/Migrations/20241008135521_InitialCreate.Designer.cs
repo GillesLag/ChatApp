@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(ChatDbContext))]
-    [Migration("20241008113338_InitialCreate")]
+    [Migration("20241008135521_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -52,7 +52,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Messaages");
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("DAL.Models.User", b =>
@@ -81,13 +81,13 @@ namespace DAL.Migrations
                     b.HasOne("DAL.Models.User", "Receiver")
                         .WithMany("ReceivedMessages")
                         .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("DAL.Models.User", "Sender")
                         .WithMany("SentMessages")
                         .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Receiver");
