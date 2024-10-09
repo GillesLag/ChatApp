@@ -1,7 +1,6 @@
 ﻿using DAL;
 using Microsoft.VisualBasic;
 using Server.NET.IO;
-using Server.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +22,6 @@ namespace Server
             _packetReader = new PacketReader(ClientSocket.GetStream());
 
             Task.Run(Process);
-
         }
 
         private void Process()
@@ -44,7 +42,6 @@ namespace Server
                             string username = message[0];
                             string password = message[1];
 
-                            UserService.Authenticate(username, password);
                             if (!Program.AuthenticateUser(username, password))
                             {
                                 packets.WriteOpCode(1);
@@ -102,8 +99,7 @@ namespace Server
                         //Send message to user
                         case 5:
                             string msg = _packetReader.ReadMessage();
-                            message = msg.Split(";");
-                            Program.SendMsgToUser(message[1], msg);
+                            Program.SendMsgToUser(msg);
                             break;
                     }
                 }

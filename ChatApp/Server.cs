@@ -18,9 +18,8 @@ namespace ChatApp
         public PacketReader PacketReader { get; set; }
         public int MyProperty { get; set; }
 
-        public delegate void AllUsers(IEnumerable<User> users);
         
-        public event AllUsers AllUsersEvent;
+        public event Action AllUsersEvent;
         public event Action NewUserEvent;
         public event Action MsgReceivedEvent;
         public event Action LoggedInEvent;
@@ -94,9 +93,7 @@ namespace ChatApp
                             break;
 
                         case 4:
-                            string[] users = PacketReader.ReadMessage().Split(';');
-                            IEnumerable<User> allUsers = users.Select(u => new User(u));
-                            AllUsersEvent.Invoke(allUsers);
+                            AllUsersEvent.Invoke();
                             break;
 
                         case 5:

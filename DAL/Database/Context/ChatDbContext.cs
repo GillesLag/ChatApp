@@ -35,6 +35,7 @@ namespace DAL.Database.Context
                 .HasForeignKey(m => m.ReceiverId)
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
+
         }
     }
 }

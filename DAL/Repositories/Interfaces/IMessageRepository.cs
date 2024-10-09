@@ -9,5 +9,6 @@ namespace DAL.Repositories.Interfaces
 {
     public interface IMessageRepository : IRepository<Message>
     {
+        IEnumerable<Message> GetAllUserMessages(string username); 
     }
 }

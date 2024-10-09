@@ -12,7 +12,7 @@ namespace DAL.Repositories
 {
     public class UserRepository : Repository<User>, IUserRepository
     {
-        public ChatDbContext? ChatDbContext 
+        public ChatDbContext ChatDbContext 
         {
             get { return _dbContext as ChatDbContext; } 
         }
@@ -20,6 +20,11 @@ namespace DAL.Repositories
         public UserRepository(ChatDbContext context) : base(context)
         {
 
+        }
+
+        public User GetByUsername(string username)
+        {
+            return ChatDbContext.Users.First(u => u.UserName == username);
         }
     }
 }

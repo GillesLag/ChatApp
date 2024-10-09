@@ -16,5 +16,13 @@ namespace DAL.Repositories
         public MessageRepository(ChatDbContext context) : base(context)
         {
         }
+
+        public IEnumerable<Message> GetAllUserMessages(string username)
+        {
+            return ChatDbContext.Messages
+                    .Include(m => m.Sender)
+                    .Include(m => m.Receiver)
+                    .Where(m => m.Sender.UserName == username || m.Receiver.UserName == username);
+        }
     }
 }
