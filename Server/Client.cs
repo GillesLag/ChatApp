@@ -1,6 +1,7 @@
 ﻿using DAL;
 using Microsoft.VisualBasic;
 using Server.NET.IO;
+using Server.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,12 +36,15 @@ namespace Server
                     var opcode = _packetReader.ReadByte();
                     switch (opcode)
                     {
+                        //Authenticate user
                         case 1:
                             PacketBuilder packets = new PacketBuilder();
 
                             string[] message = _packetReader.ReadMessage().Split(';');
                             string username = message[0];
                             string password = message[1];
+
+                            UserService.Authenticate(username, password);
                             if (!Program.AuthenticateUser(username, password))
                             {
                                 packets.WriteOpCode(1);
@@ -64,6 +68,7 @@ namespace Server
 
                             break;
 
+                        //Register user
                         case 2:
                             message = _packetReader.ReadMessage().Split(';');
                             username = message[0];
@@ -94,6 +99,7 @@ namespace Server
 
                             break;
 
+                        //Send message to user
                         case 5:
                             string msg = _packetReader.ReadMessage();
                             message = msg.Split(";");

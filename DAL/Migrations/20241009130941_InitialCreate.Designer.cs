@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(ChatDbContext))]
-    [Migration("20241008135521_InitialCreate")]
+    [Migration("20241009130941_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -69,9 +69,12 @@ namespace DAL.Migrations
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("UserId");
+
+                    b.HasIndex("UserName")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });

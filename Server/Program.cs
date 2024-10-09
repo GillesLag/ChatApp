@@ -112,6 +112,11 @@ namespace Server
         public static void Disconnect(Client client)
         {
             users.Remove(client);
+
+            if (client.Username == null)
+            {
+                return;
+            }
             foreach (Client user in users)
             {
                 var pb = new PacketBuilder();
