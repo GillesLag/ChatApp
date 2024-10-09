@@ -22,7 +22,6 @@ namespace Server
             _packetReader = new PacketReader(ClientSocket.GetStream());
 
             Task.Run(Process);
-
         }
 
         private void Process()
@@ -35,12 +34,14 @@ namespace Server
                     var opcode = _packetReader.ReadByte();
                     switch (opcode)
                     {
+                        //Authenticate user
                         case 1:
                             PacketBuilder packets = new PacketBuilder();
 
                             string[] message = _packetReader.ReadMessage().Split(';');
                             string username = message[0];
                             string password = message[1];
+
                             if (!Program.AuthenticateUser(username, password))
                             {
                                 packets.WriteOpCode(1);
@@ -64,6 +65,7 @@ namespace Server
 
                             break;
 
+                        //Register user
                         case 2:
                             message = _packetReader.ReadMessage().Split(';');
                             username = message[0];
@@ -94,10 +96,10 @@ namespace Server
 
                             break;
 
+                        //Send message to user
                         case 5:
                             string msg = _packetReader.ReadMessage();
-                            message = msg.Split(";");
-                            Program.SendMsgToUser(message[1], msg);
+                            Program.SendMsgToUser(msg);
                             break;
                     }
                 }

@@ -8,7 +8,6 @@ using System.Net;
 using ChatApp.NET.IO;
 using System.Windows;
 using ChatApp.MVVM.Model;
-using DotNetEnv;
 using System.IO;
 
 namespace ChatApp
@@ -17,14 +16,12 @@ namespace ChatApp
     {
         private TcpClient _client;
         public PacketReader PacketReader { get; set; }
+        public int MyProperty { get; set; }
 
-        public delegate void NewUser(User user);
-        public delegate void AllUsers(IEnumerable<User> users);
-        public delegate void MessageReceived(string username, string message);
         
-        public event AllUsers AllUsersEvent;
-        public event NewUser NewUserEvent;
-        public event MessageReceived MsgReceivedEvent;
+        public event Action AllUsersEvent;
+        public event Action NewUserEvent;
+        public event Action MsgReceivedEvent;
         public event Action LoggedInEvent;
         public event Action DisconnectEvent;
         public event Action FailedLoginOrRegisterEvent;
@@ -49,9 +46,7 @@ namespace ChatApp
         {
             if (!_client.Connected)
             {
-                Env.Load("D:\\Projects\\ChatApp\\ChatApp\\.env");
-                var ip = Environment.GetEnvironmentVariable("SERVER_IP");
-                await _client.ConnectAsync(IPAddress.Parse(Environment.GetEnvironmentVariable("SERVER_IP")), 5000);
+                await _client.ConnectAsync("127.0.0.1", 5000);
                 PacketReader = new PacketReader(_client.GetStream());
             }
         }
@@ -94,19 +89,15 @@ namespace ChatApp
                             break;
 
                         case 3:
-                            message = PacketReader.ReadMessage();
-                            NewUserEvent.Invoke(new User(message));
+                            NewUserEvent.Invoke();
                             break;
 
                         case 4:
-                            string[] users = PacketReader.ReadMessage().Split(';');
-                            IEnumerable<User> allUsers = users.Select(u => new User(u));
-                            AllUsersEvent.Invoke(allUsers);
+                            AllUsersEvent.Invoke();
                             break;
 
                         case 5:
-                            string[] msg = PacketReader.ReadMessage().Split(';');
-                            MsgReceivedEvent.Invoke(msg[0], msg[2]);
+                            MsgReceivedEvent.Invoke();
                             break;
 
                         case 10:

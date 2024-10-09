@@ -1,6 +1,9 @@
-﻿using ChatApp.MVVM.Core;
+﻿using BLL.DTO_s;
+using ChatApp.MVVM.Core;
 using ChatApp.MVVM.Model;
 using ChatApp.NET.IO;
+using Microsoft.Web.WebView2.Core;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -46,32 +49,49 @@ namespace ChatApp.MVVM.ViewModel
             });
         }
 
-        private void MsgReceivedEvent(string sender, string message)
+        private void MsgReceivedEvent()
         {
-            var user = Users.First(x => x.Username == sender);
+            var message = _server.PacketReader.ReadMessage().Split(';');
+            var user = Users.First(x => x.Username == message[0]);
 
             Application.Current.Dispatcher.Invoke(() =>
             {
-                user.Messages.Add(message);
+                user.Messages.Add($"{message[2]} {message[0]}: {message[3]}");
             });
         }
 
-        private void AllUsersEvent(IEnumerable<User> users)
+        private void AllUsersEvent()
         {
-            foreach (var user in users)
+            string message = _server.PacketReader.ReadMessage();
+            UserMessageDto msgDto = JsonConvert.DeserializeObject<UserMessageDto>(message);
+
+            foreach (var user in msgDto.Users)
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    Users.Add(user);
+                    Users.Add(new User(user));
+                });
+            }
+
+            foreach (var msg in msgDto.Messages)
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    var user = Users.FirstOrDefault(u => u.Username == msg.Key);
+                    foreach (var item in msg.Value)
+                    {
+                        user.Messages.Add(item);
+                    }
                 });
             }
         }
 
-        private void NewUserEvent(User user)
+        private void NewUserEvent()
         {
+            string user = _server.PacketReader.ReadMessage();
             Application.Current.Dispatcher.Invoke(() =>
             {
-                Users.Add(user);
+                Users.Add(new User(user));
             });
         }
 
@@ -86,7 +106,7 @@ namespace ChatApp.MVVM.ViewModel
             string msg = $"{time} {Username}: {Message}";
             Receiver.Messages.Add(msg);
 
-            string msgToSend = $"{Username};{Receiver.Username};{msg}";
+            string msgToSend = $"{Username};{Receiver.Username};{time};{Message}";
             _server.SendMessage(msgToSend);
         }
     }

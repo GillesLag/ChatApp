@@ -1,16 +1,28 @@
-﻿using DAL;
+﻿using BLL.DTO_s;
+using BLL.Services;
+using DAL;
+using DAL.Models;
+using DAL.UnitOfWork;
+using DAL.UnitOfWork.Interfacds;
+using Newtonsoft.Json;
 using Server.NET.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.Json.Nodes;
 
 namespace Server
 {
     class Program
     {
         static List<Client> users = new List<Client>();
+        static MessageService messageService;
+        static UserService userService;
         static void Main(string[] args)
         {
+            var unitOfWork = new UnitOfWork(new DAL.Database.Context.ChatDbContext());
+            messageService = new MessageService(unitOfWork);
+            userService = new UserService(unitOfWork);
             TcpListener tcpListener = new TcpListener(IPAddress.Any, 5000);
             tcpListener.Start();
             Console.WriteLine("Server started, now listening...");
@@ -25,10 +37,9 @@ namespace Server
         public static bool AuthenticateUser(string username, string password)
         {
             Console.WriteLine("Client connected, trying to login.");
-            if (DatabaseOperations.Login(username, password))
+            if (userService.AuthenticateUser(username, password))
             {
                 Console.WriteLine($"{username} has logged in.");
-
                 return true;
             }
 
@@ -38,14 +49,17 @@ namespace Server
         public static bool RegisterUser(string username, string password)
         {
             Console.WriteLine("Client connected, trying to register.");
-            if(DatabaseOperations.Register(username, password))
-            {
-                Console.WriteLine($"{username} has register and is logged in.");
 
+            try
+            {
+                userService.RegisterUser(username, password);
+                Console.WriteLine($"{username} has register and is logged in.");
                 return true;
             }
-
-            return false;
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public static void BroadcastMessage(Client client)
@@ -64,40 +78,43 @@ namespace Server
         {
             var pb = new PacketBuilder();
             pb.WriteOpCode(4);
-            var sb = new StringBuilder();
 
-            foreach (var user in users.Where(u => u != client))
-            {
-                sb.Append(user.Username);
-                sb.Append(';');
-            }
+            var message = messageService.GetAllUserConversations(client.Username);
+            var users = userService.GetAllUsers();
 
-            if (sb.Length > 0)
+            UserMessageDto userMsgDto = new UserMessageDto()
             {
-                sb.Remove(sb.Length - 1, 1);
-            }
-            else
-            {
-                return;
-            }
+                Users = users,
+                Messages = message
+            };
 
-            pb.WriteMessage(sb.ToString());
+            pb.WriteMessage(JsonConvert.SerializeObject(userMsgDto));
             client.ClientSocket.Client.Send(pb.GetPacketBytes());
         }
 
-        public static void SendMsgToUser(string receiver, string message)
+        public static void SendMsgToUser(string message)
         {
-            var user = users.First(u => u.Username == receiver);
+            var msgArray = message.Split(';'); 
+            string receiver = msgArray[1];
+
+            messageService.HandleMessage(message);
+
             var pb = new PacketBuilder();
             pb.WriteOpCode(5);
             pb.WriteMessage(message);
 
+            var user = users.First(u => u.Username == receiver);
             user.ClientSocket.Client.Send(pb.GetPacketBytes());
         }
 
         public static void Disconnect(Client client)
         {
             users.Remove(client);
+
+            if (client.Username == null)
+            {
+                return;
+            }
             foreach (Client user in users)
             {
                 var pb = new PacketBuilder();
