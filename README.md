@@ -1,1 +1,1 @@
-Project om netwerk programming te leren.
+Project om sockets te leren.
